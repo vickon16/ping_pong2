@@ -8,7 +8,11 @@
      color: #eee;
 }
 
-
-
+@media screen and (max-width: 450px) {
+  #Pong {
+    width:100%;
+    height: auto;
+  }
+}
 
 
