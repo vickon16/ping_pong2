@@ -6,6 +6,64 @@
   body {
      background-color: #444;
      color: #eee;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     height: 100%;
+     overflow-y:hidden;
+}
+
+
+
+#Pong {
+    border: 1px solid #fff;
+      height: 100%;
+     image-rendering: pixelated;
+     perspective: 300;
+     position: relative;
+}
+
+
+
+#message {
+  font-size: 3rem;
+  font-weight: bold;
+  color: red;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin: 2rem 0;
+  padding: 1rem;
+  display: none;
+  transform: translateY(-300px);
+}
+
+#retry {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: red;
+  border: 1px solid white;
+  border-radius: 5px;
+  transform: translateY(-80px);
+  margin: 0;
+  padding: .5rem;
+  display: none;
+  cursor: pointer;
+}
+
+footer {
+  padding: 4rem 0;
+  background-color: black;
+  margin: 2rem 1rem;
+  width:100%;
+  text-align: center;
+  font-size: 1rem;
+}
+
+footer .brand {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  color:cyan;
 }
 
 @media screen and (max-width: 450px) {
