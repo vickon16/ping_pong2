@@ -31,7 +31,6 @@
   color: red;
   border: 1px solid white;
   border-radius: 5px;
-  margin: 2rem 0;
   padding: 1rem;
   display: none;
   transform: translateY(-300px);
@@ -44,7 +43,6 @@
   border: 1px solid white;
   border-radius: 5px;
   transform: translateY(-80px);
-  margin: 0;
   padding: .5rem;
   display: none;
   cursor: pointer;
@@ -66,11 +64,34 @@ footer .brand {
   color:cyan;
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width:450px) {
+
   #Pong {
     width:100%;
     height: auto;
   }
+
+
+
+  #message {
+    font-size: 1.8rem;
+    transform: translateY(-150px);
+  }
+  
+  #retry {
+    font-size: 1.5rem;
+  transform: translateY(0px);
+    
+  }
+  
+  footer {
+    padding: 2rem 0;
+    margin: 1rem;
+  }
+
+
+
+
 }
 
 
