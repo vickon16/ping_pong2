@@ -1,9 +1,24 @@
 
+
+
+
 class Vec {
 
   constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
+  }
+
+  // to get the hypothensis of vel.x and vel.y
+  get len() {
+    return Math.sqrt((this.x * this.x ) + (this.y * this.y));
+  }
+
+  set len (value) {
+    const fact = value / this.len;
+    this.x *= fact;
+    this.y *= fact;
+
   }
 
 }
@@ -12,6 +27,22 @@ class Rect {
   constructor(w, h) {
     this.pos = new Vec; /* this.pos return Vec{x:0, y:0} */
     this.size = new Vec(w, h) /* this.size return Vec{x:0, y:0}, unless the w,h value is changed */
+  }
+
+  get left() {
+    return this.pos.x;
+  }
+
+  get right() {
+    return this.pos.x + (this.size.x )
+  }
+
+  get top() {
+    return this.pos.y;
+  }
+
+  get bottom() {
+    return this.pos.y + (this.size.y)
   }
 }
 
@@ -61,6 +92,8 @@ class Player extends Rect {
     this.score = 0;
   }
 
+  
+
 
 }
 
@@ -70,6 +103,13 @@ class Seperator extends Rect {
   }
   
 }
+
+class Text extends Player {
+  constructor() {
+    super()
+  }
+}
+
 
 
 
@@ -84,14 +124,8 @@ class Pong {
 
     this.ball = new Ball;
     this.rect = new Rect;
-    // console.log(this.ball.left)
     console.log(this.rect.size.x)
 
-    this.ball.pos.x = 100;
-    this.ball.pos.y = 50;
-
-    this.ball.vel.x = 150;
-    this.ball.vel.y = 150;
 
     this.players = [ new Player, new Player];
 
@@ -105,6 +139,15 @@ class Pong {
 
     this.seperator = new Seperator;
     this.seperator.pos.x = (this._canvas.width-2)/2;
+
+    this.text = [new Text, new Text]
+    console.log(this.text[0])
+
+    this.text[0].pos.x = this._canvas.width / 4;
+    this.text[1].pos.x = this._canvas.width - (this._canvas.width  / 4) - 50;
+    this.text.forEach(player => {
+      player.pos.y = this._canvas.height / 5;
+    })
 
 
     // ball animation
@@ -121,6 +164,7 @@ class Pong {
     };
 
     callBack();
+    this.reset();
   }
 
 
@@ -146,6 +190,25 @@ class Pong {
     }
   }
 
+  drawText(text, point, color) {
+    this._context.fillStyle = color;
+    this._context.font = "50px Arial";
+    this._context.fillText(text, point.x, point.y)
+  }
+
+  
+
+  collide(player, ball) {
+    if (player.left < ball.right && player.right > ball.left &&  player.top < ball.bottom && player.bottom > ball.top) {
+
+      const len = ball.vel.len;
+      ball.vel.x = -ball.vel.x;
+      ball.vel.y += 300 * (Math.random() - .5);
+      // ball.vel.len = len * 1.05; /* increase the ball speed as it collide */
+    }
+
+  }
+
 
   draw() {
 
@@ -158,8 +221,66 @@ class Pong {
     this.drawRect(this.players[1], "yellow")
 
     this.drawSeperator(this.seperator, "yellow")
+
+    this.drawText(this.players[0].score, this.text[0].pos, "white")
+    this.drawText(this.players[1].score, this.text[1].pos, "white")
+    
     
 
+  }
+
+  reset() {
+
+    this.ball.pos.x = this._canvas.width/2;
+    this.ball.pos.y = this._canvas.height /2;
+
+    this.ball.vel.x = 0;
+    this.ball.vel.y = 0;
+  }
+
+  resetAll() {
+    this.reset()
+
+    this.players[0].score = "0";
+    this.players[1].score = "0";
+
+    message.style.display = "none"
+    retry.style.display = "none";
+    message.innerHTML = "";
+    retry.innerHTML = "";
+
+  }
+
+
+  gameover() {
+    let count = 5
+    if (this.players[0].score + this.players[1].score >= count && this.players[0].score < this.players[1].score) {
+      message.style.display = "block";
+      retry.style.display = "block";
+      message.innerHTML = "GAME OVER"
+      retry.innerHTML = "Try Again?"
+      this.reset()
+    } else if (this.players[0].score + this.players[1].score >= count && this.players[0].score > this.players[1].score) {
+      message.style.display = "block";
+      retry.style.display = "block";
+      message.innerHTML = "You Won"
+      message.style.color = "Green"
+      retry.innerHTML = "Try Again?"
+      this.reset()
+    }
+  }
+
+  start() {
+    let count = 0
+    if (this.ball.vel.x === 0 && this.ball.vel.y === 0) {
+
+      // this happens when the user clicks the screen to start the game and the ball's velocity starts in random direction
+      this.ball.vel.x = 300 * (Math.random() > .5 ? 1 : -1);
+      this.ball.vel.y = 300 * (Math.random() * 2 -1);
+
+      this.ball.vel.len = 400; /*this is the overall ball speed*/
+
+    }
   }
 
 
@@ -171,16 +292,36 @@ class Pong {
 
     // detect if ball touched corner
 
-    if (this.ball.left < 0 || this.ball.right > this._canvas.width) {
-      this.ball.vel.x = -this.ball.vel.x;
+    if (this.ball.left < 0 )  {
+      this.players[1].score++;
+      this.reset();
     }
+
+    else if (this.ball.right > this._canvas.width) {
+      this.players[0].score++;
+      this.reset()
+    }
+      
 
     if (this.ball.top < 0 || this.ball.bottom > this._canvas.height) {
       this.ball.vel.y = -this.ball.vel.y;
     }
 
+
     // to make the Cpu move
-    this.players[1].pos.y = this.ball.pos.y;
+    // this.players[1].pos.y = this.ball.pos.y;
+    if (this.players[1].pos.y < this.ball.pos.y) {
+      this.players[1].pos.y += 6
+    } else {
+      this.players[1].pos.y -= 6
+
+    }
+
+    this.players.forEach(player => {
+      this.collide(player, this.ball)
+    })
+
+    this.gameover()
 
     this.draw()
 
@@ -188,15 +329,38 @@ class Pong {
 
 }
 
+// canvas.on
 
 const canvas = document.getElementById("Pong")
 const pong = new Pong(canvas);
 
+const message = document.getElementById("message");
+const retry = document.getElementById("retry");
 
-canvas.addEventListener("mousemove", event => {
+
+canvas.addEventListener("pointermove", event => {
   let boundary = canvas.getBoundingClientRect();
   pong.players[0].pos.y = event.clientY - boundary.top - pong.players[0].size.y/2;
 })
+
+canvas.addEventListener("click", () => {
+  pong.start();
+})
+
+
+
+retry.addEventListener("click", () => {
+  pong.resetAll();
+
+})
+
+
+
+
+
+
+
+
 
 
 
