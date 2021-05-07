@@ -48,6 +48,25 @@
   cursor: pointer;
 }
 
+
+.btn {
+  padding:.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  width:90%;
+}
+
+.btn button{
+  padding: 0 1rem;
+  background-color: cyan;
+  outline:none;
+  border:none;
+}
+
+.btn button span {
+  color:black;
+}
+
 footer {
   padding: 4rem 0;
   background-color: black;

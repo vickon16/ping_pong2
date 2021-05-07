@@ -90,6 +90,8 @@ class Player extends Rect {
   constructor() {
     super(15, 100) 
     this.score = 0;
+    this.speed = 5;
+    this.dy = 0;
   }
 
   
@@ -207,6 +209,7 @@ class Pong {
       // ball.vel.len = len * 1.05; /* increase the ball speed as it collide */
     }
 
+    
   }
 
 
@@ -283,6 +286,32 @@ class Pong {
     }
   }
 
+  detectUserWall() {
+    if(this.players[0].pos.y < 0) {
+      this.players[0].pos.y = 0
+    } else if(this.players[0].pos.y + this.players[0].size.y > this._canvas.height) {
+      this.players[0].pos.y = this._canvas.height - this.players[0].size.y;
+    }
+  }
+
+
+  newUserPos() {
+    this.players[0].pos.y += this.players[0].dy;
+    this.detectUserWall()
+  }
+
+
+  moveUserUp() {
+    this.players[0].dy = -this.players[0].speed;
+    
+  }
+  
+  moveUserDown() {
+    this.players[0].dy = this.players[0].speed;
+  }
+
+
+
 
 
 
@@ -321,6 +350,8 @@ class Pong {
       this.collide(player, this.ball)
     })
 
+    this.newUserPos()
+
     this.gameover()
 
     this.draw()
@@ -338,15 +369,18 @@ const message = document.getElementById("message");
 const retry = document.getElementById("retry");
 
 
-canvas.addEventListener("pointermove", event => {
-  let boundary = canvas.getBoundingClientRect();
-  pong.players[0].pos.y = event.clientY - boundary.top - pong.players[0].size.y/2;
-})
+
+
+// use the mouse movement
+
+// canvas.addEventListener("mousemove", event => {
+//   let boundary = canvas.getBoundingClientRect();
+//   pong.players[0].pos.y = event.clientY - boundary.top - pong.players[0].size.y/2;
+// })
 
 canvas.addEventListener("click", () => {
   pong.start();
 })
-
 
 
 retry.addEventListener("click", () => {
@@ -355,21 +389,48 @@ retry.addEventListener("click", () => {
 })
 
 
+const btn1 = document.getElementById("btn1")
+const btn2 = document.getElementById("btn2")
 
 
 
 
+btn1.addEventListener("click", function() {
+  pong.moveUserUp();
 
+});
 
-
-
-
-
-
-
+btn2.addEventListener("click", function() {
+  pong.moveUserDown();
+})
   
 
 
+// to use the keyboard movement
+
+
+// function keyDown(e) {
+//   if (e.key == "ArrowUp" || e.key == "Up") {
+//     pong.moveUserUp();
+//   }
+//   else if (e.key == "ArrowDown" || e.key == "Down") {
+//     pong.moveUserDown();
+//   }
+// }
+
+
+
+// function keyUp(e) {
+//   if (
+//     e.key == "Up" ||
+//     e.key == "ArrowUp" ||
+//     e.key == "Down" ||
+//     e.key == "ArrowDown"
+//     )
+//   {
+//     pong.players[0].dy = 0;
+//   }
+// }
 
 
 
